@@ -60,7 +60,7 @@ if __name__ == '__main__':
     biggest_bar = get_biggest_bar(data)
     print(biggest_bar)
 
-    # Самый большой
+    # Самый маленький
     smallest_bar = get_smallest_bar(data)
     print(smallest_bar)
 
