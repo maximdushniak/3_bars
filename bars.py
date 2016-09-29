@@ -18,4 +18,4 @@ def get_closest_bar(data, longitude, latitude):
 
 
 if __name__ == '__main__':
-    pass
+    print('Hello')
