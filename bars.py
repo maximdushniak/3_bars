@@ -1,76 +1,67 @@
 import json
 import math
-
+import os
 
 def load_data(filepath):
-    data = []
-    with open(filepath) as datafile:
-        data = json.loads(datafile.read())
-    return data
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, 'r', encoding='utf-8') as file_handler:
+        return json.load(file_handler)
 
 
 def get_biggest_bar(data):
-    max_seats_count = 0
-    biggest_bar = []
-    for i in data:
-        if i['Cells']['SeatsCount']>=max_seats_count:
-            max_seats_count =  i['Cells']['SeatsCount']
-            biggest_bar = i
+    index_biggest_bar = max(range(len(data)), key=lambda x: data[x]['Cells']['SeatsCount'])
+    biggest_bar = data[index_biggest_bar]
 
     return biggest_bar
 
 
 def get_smallest_bar(data):
-    min_seats_count = 0
-    smallest_bar = []
-    for i in data:
-        if i['Cells']['SeatsCount']<=min_seats_count:
-            min_seats_count =  i['Cells']['SeatsCount']
-            smallest_bar = i
+    index_smallest_bar = min(range(len(data)), key=lambda x: data[x]['Cells']['SeatsCount'])
+    smallest_bar = data[index_smallest_bar]
 
     return smallest_bar
 
 
 def get_closest_bar(data, longitude, latitude):
 
-    min_l = 0
-    closest_bar = []
-    for i in data:
-        i_longitude = float(i['Cells']['geoData']['coordinates'][0]) #
-        i_latitude = float(i['Cells']['geoData']['coordinates'][1])
-
-        l = math.sqrt(math.pow((i_longitude - longitude), 2) + math.pow((i_latitude - latitude), 2))
-
-        if l<=min_l:
-            min_l = l
-            closest_bar = i
+    index_closets_bar = min(range(len(data)), key=lambda x: math.sqrt((data[x]['Cells']['geoData']['coordinates'][0] - longitude)**2 + (data[x]['Cells']['geoData']['coordinates'][1] - latitude)**2))
+    closest_bar = data[index_closets_bar]
 
     return closest_bar
 
 
 if __name__ == '__main__':
 
-    # filepath = 'Бары.json'
-    filepath = input(u'Имя файла [Бары.json]: ')
+    filepath = input(u'Имя файла [data.json]: ')
     if not filepath:
-        filepath = 'Бары.json'
+        filepath = 'data.json'
     data = load_data(filepath)
 
-    # самый большой
-    biggest_bar = get_biggest_bar(data)
-    print(biggest_bar)
+    if data is None:
+        pass
+    else:
+        # самый большой
+        biggest_bar = get_biggest_bar(data)
+        print("Самый большой бар:", biggest_bar)
 
-    # Самый маленький
-    smallest_bar = get_smallest_bar(data)
-    print(smallest_bar)
+        # Самый маленький
+        smallest_bar = get_smallest_bar(data)
+        print("Самый маленький бар:", smallest_bar)
 
-    # Ближайший
-    longitude, latitude = input('Долгота [37.621587946152012]: '), input('Широта: [55.765366956608361]')
-    # 'Name': 'Юнион Джек'
-    # 37.621587946152012, 55.765366956608361
-    if not longitude:
-        longitude = 37.621587946152012
-    if not latitude:
-        latitude = 55.765366956608361
-    closest_bar = get_closest_bar(data, longitude, latitude)
-    print(closest_bar)
+        # Ближайший
+        try:
+            longitude  = float(input('Долгота [37.621587946152012]: '))
+        except ValueError:
+            longitude = None
+
+        try:
+            latitude = float(input('Широта: [55.765366956608361]: '))
+        except ValueError:
+            latitude = None
+
+        if not (latitude is None or longitude is None):
+            closest_bar = get_closest_bar(data, longitude, latitude)
+            print('Ближайший бар:', closest_bar)
+        else:
+            print('Введены неверные координаты')
