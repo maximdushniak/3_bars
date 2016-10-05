@@ -23,8 +23,8 @@ def get_smallest_bar(data):
 
 def get_closest_bar(data, longitude, latitude):
     closest_bar = min(data, key=lambda x:
-    math.sqrt((x['Cells']['geoData']['coordinates'][0] - longitude)**2
-              + (x['Cells']['geoData']['coordinates'][1] - latitude)**2))
+        math.sqrt((x['Cells']['geoData']['coordinates'][0] - longitude)**2
+                  + (x['Cells']['geoData']['coordinates'][1] - latitude)**2))
 
     return closest_bar
 
