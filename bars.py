@@ -10,23 +10,21 @@ def load_data(filepath):
 
 
 def get_biggest_bar(data):
-    index_biggest_bar = max(range(len(data)), key=lambda x: data[x]['Cells']['SeatsCount'])
-    biggest_bar = data[index_biggest_bar]
+    biggest_bar = max(data, key=lambda x: x['Cells']['SeatsCount'])
 
     return biggest_bar
 
 
 def get_smallest_bar(data):
-    index_smallest_bar = min(range(len(data)), key=lambda x: data[x]['Cells']['SeatsCount'])
-    smallest_bar = data[index_smallest_bar]
+    smallest_bar = min(data, key=lambda x: x['Cells']['SeatsCount'])
 
     return smallest_bar
 
 
 def get_closest_bar(data, longitude, latitude):
-
-    index_closets_bar = min(range(len(data)), key=lambda x: math.sqrt((data[x]['Cells']['geoData']['coordinates'][0] - longitude)**2 + (data[x]['Cells']['geoData']['coordinates'][1] - latitude)**2))
-    closest_bar = data[index_closets_bar]
+    closest_bar = min(data, key=lambda x:
+    math.sqrt((x['Cells']['geoData']['coordinates'][0] - longitude)**2
+              + (x['Cells']['geoData']['coordinates'][1] - latitude)**2))
 
     return closest_bar
 
