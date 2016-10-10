@@ -1,11 +1,10 @@
 import json
-import math
 import os
 import sys
 import argparse
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('filepath', nargs='?')
 
@@ -21,7 +20,7 @@ def load_data(filepath):
 
 def input_coord(coord_name=''):
     try:
-        return float(input('Введите координату ' + coord_name + ' :'))
+        return float(input(coord_name + ':'))
     except ValueError:
         return None
 
@@ -40,14 +39,14 @@ def get_smallest_bar(data):
 
 def get_closest_bar(data, longitude, latitude):
     closest_bar = min(data, key=lambda x:
-        math.sqrt((x['Cells']['geoData']['coordinates'][0] - longitude)**2
-                  + (x['Cells']['geoData']['coordinates'][1] - latitude)**2))
+        ((x['Cells']['geoData']['coordinates'][0] - longitude)**2 +
+         (x['Cells']['geoData']['coordinates'][1] - latitude)**2)**0.5)
 
     return closest_bar
 
 
 if __name__ == '__main__':
-    parser = createParser()
+    parser = create_parser()
     namespace = parser.parse_args(sys.argv[1:])
     
     if namespace.filepath:
@@ -65,8 +64,9 @@ if __name__ == '__main__':
         smallest_bar = get_smallest_bar(data)
         print("Самый маленький бар:", smallest_bar)
 
+        print('Для определения ближайшего бара введите координаты')
         longitude = input_coord('Долгота')
-        latitude = input_coord('Широта:')
+        latitude = input_coord('Широта')
 
         if latitude is None or longitude is None:
             print('Введены неверные координаты')
