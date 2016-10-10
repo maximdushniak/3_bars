@@ -1,12 +1,29 @@
 import json
 import math
 import os
+import sys
+import argparse
+
+
+def createParser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filepath', nargs='?')
+
+    return parser
+
 
 def load_data(filepath):
     if not os.path.exists(filepath):
         return None
     with open(filepath, 'r', encoding='utf-8') as file_handler:
         return json.load(file_handler)
+
+
+def input_coord(coord_name=''):
+    try:
+        return float(input('Введите координату ' + coord_name + ' :'))
+    except ValueError:
+        return None
 
 
 def get_biggest_bar(data):
@@ -30,36 +47,31 @@ def get_closest_bar(data, longitude, latitude):
 
 
 if __name__ == '__main__':
-
-    filepath = input(u'Имя файла [data.json]: ')
-    if not filepath:
-        filepath = 'data.json'
+    parser = createParser()
+    namespace = parser.parse_args(sys.argv[1:])
+    
+    if namespace.filepath:
+        filepath = namespace.filepath
+    else:
+        filepath = input(u'Имя файла [data.json]: ')
+        if not filepath:
+            filepath = 'data.json'
     data = load_data(filepath)
 
-    if data is None:
-        pass
-    else:
-        # самый большой
+    if data is not None:
         biggest_bar = get_biggest_bar(data)
         print("Самый большой бар:", biggest_bar)
 
-        # Самый маленький
         smallest_bar = get_smallest_bar(data)
         print("Самый маленький бар:", smallest_bar)
 
-        # Ближайший
-        try:
-            longitude  = float(input('Долгота [37.621587946152012]: '))
-        except ValueError:
-            longitude = None
+        longitude = input_coord('Долгота')
+        latitude = input_coord('Широта:')
 
-        try:
-            latitude = float(input('Широта: [55.765366956608361]: '))
-        except ValueError:
-            latitude = None
-
-        if not (latitude is None or longitude is None):
+        if latitude is None or longitude is None:
+            print('Введены неверные координаты')
+        else:
             closest_bar = get_closest_bar(data, longitude, latitude)
             print('Ближайший бар:', closest_bar)
-        else:
-            print('Введены неверные координаты')
+    else:
+        print('Файл не найден.')
